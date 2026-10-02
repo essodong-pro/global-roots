@@ -13,7 +13,7 @@ export const countries: Country[] = [
         id: 1,
         name: "Togo",
         region: "West Africa",
-        capital: "Lomé",
+        capital: "Lome",
         language: "French",
         currency: "West African CFA franc",
         description:
@@ -43,7 +43,7 @@ export const countries: Country[] = [
         id: 4,
         name: "Brazil",
         region: "South America",
-        capital: "Brasília",
+        capital: "Brasilia",
         language: "Portuguese",
         currency: "Brazilian real",
         description:
