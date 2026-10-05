@@ -14,7 +14,7 @@ const links = [
     
     { href: "/", label: "Home" },
     
-    { href: "/maps", label: "All Maps" },
+    { href: "/map", label: "Cultural Map" },
     
 ];
 
