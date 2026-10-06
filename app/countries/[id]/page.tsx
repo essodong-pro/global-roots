@@ -2,22 +2,30 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCountryProfile } from "@/lib/mock-data-service";
 
+// The page receives the [id] part of the URL.
 type CountryPageProps = {
   params: Promise<{ id: string }>;
 };
 
+// Country detail page (/countries/[id]): full cultural profile for one country.
+// PLACEHOLDER (Issue 8): Check colors match the design system (#166534 / #D97706).
+// PLACEHOLDER (Issue 7): Check spacing and the info grid on mobile.
 export default async function CountryDetailPage({
   params,
 }: CountryPageProps) {
+  // Read the id from the URL and turn it into a number.
   const { id } = await params;
   const countryId = Number(id);
 
+  // Show the not-found page for ids that aren't numbers.
   if (Number.isNaN(countryId)) {
     notFound();
   }
 
+  // Load the country with its cultural info, stories, and quiz questions.
   const profile = getCountryProfile(countryId);
 
+  // Show the not-found page if the country doesn't exist.
   if (!profile) {
     notFound();
   }
@@ -27,6 +35,7 @@ export default async function CountryDetailPage({
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-12">
       <div className="mx-auto max-w-5xl">
+        {/* Back link */}
         <Link
           href="/countries"
           className="mb-8 inline-block text-sm font-medium text-green-700 hover:text-green-800"
@@ -35,6 +44,7 @@ export default async function CountryDetailPage({
         </Link>
 
         <section className="rounded-lg bg-white p-8 shadow-sm">
+          {/* Country name, region, and quick facts */}
           <div className="mb-8">
             <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-orange-600">
               {country.region}
@@ -63,6 +73,7 @@ export default async function CountryDetailPage({
           </div>
 
           <div className="space-y-8">
+            {/* Short description */}
             <section>
               <h2 className="mb-3 text-2xl font-semibold text-gray-900">
                 About
@@ -72,6 +83,7 @@ export default async function CountryDetailPage({
               </p>
             </section>
 
+            {/* History, traditions, etiquette, celebrations, and cuisine */}
             {culturalInformation && (
               <>
                 <section>
@@ -141,6 +153,7 @@ export default async function CountryDetailPage({
               </>
             )}
 
+            {/* Community stories and recipes for this country */}
             {stories.length > 0 && (
               <section>
                 <h2 className="mb-4 text-2xl font-semibold text-gray-900">
@@ -176,34 +189,19 @@ export default async function CountryDetailPage({
               </section>
             )}
 
+            {/* Link to this country's quiz questions */}
             {quizQuestions.length > 0 && (
               <section>
                 <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-                  Quiz Questions
+                  Test your knowledge
                 </h2>
 
-                <div className="space-y-4">
-                  {quizQuestions.map((question) => (
-                    <article
-                      key={question.id}
-                      className="rounded-lg border border-gray-200 p-5"
-                    >
-                      <h3 className="mb-3 font-semibold text-gray-900">
-                        {question.question}
-                      </h3>
-
-                      <ul className="list-disc space-y-1 pl-6 text-gray-700">
-                        {question.options.map(
-                          (option) => (
-                            <li key={option}>
-                              {option}
-                            </li>
-                          ),
-                        )}
-                      </ul>
-                    </article>
-                  ))}
-                </div>
+                <Link
+                  href={`/quiz?countryId=${country.id}`}
+                  className="font-medium text-green-700 hover:text-green-800"
+                >
+                  Take the {country.name} quiz →
+                </Link>
               </section>
             )}
           </div>

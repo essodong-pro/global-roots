@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import { countries } from "@/data/countries";
+import { culturalInformation } from "@/data/cultural-information";
 
+// Where each country's marker sits on the map, as % from the left (x) and top (y).
+// Add an entry here when a new country is added to data/countries.ts.
 const mapPositions: Record<number, { x: number; y: number }> = {
     1: { x: 52, y: 55 },
     2: { x: 49, y: 52 },
@@ -13,6 +16,7 @@ const mapPositions: Record<number, { x: number; y: number }> = {
     6: { x: 68, y: 55 },
 };
 
+// Short description shown for each region.
 const regionHighlights: Record<string, string> = {
     "West Africa":
         "Explore a vibrant mix of languages, music, textiles, and community celebrations across the Gulf of Guinea.",
@@ -26,50 +30,39 @@ const regionHighlights: Record<string, string> = {
         "Explore a remarkable range of languages, faiths, cuisines, and celebrations across the region.",
 };
 
-const culturalHighlights: Record<
-    number,
-    { label: string; detail: string }[]
-> = {
-    1: [
-        { label: "Celebrations", detail: "Epe Ekpe harvest celebration" },
-        { label: "Food", detail: "Akoumé and regional sauces" },
-        { label: "Arts", detail: "Ewe weaving and music traditions" },
-    ],
-    2: [
-        { label: "Celebrations", detail: "Homowo among Ga communities" },
-        { label: "Craft", detail: "Kente weaving traditions" },
-        { label: "Food", detail: "Waakye and regional rice dishes" },
-    ],
-    3: [
-        { label: "Festivals", detail: "Seasonal matsuri across Japan" },
-        { label: "Food", detail: "Washoku and regional specialties" },
-        { label: "Arts", detail: "Traditional crafts and performing arts" },
-    ],
-    4: [
-        { label: "Music", detail: "Samba and many regional sounds" },
-        { label: "Celebrations", detail: "Carnival traditions vary by city" },
-        { label: "Food", detail: "Regional dishes such as moqueca" },
-    ],
-    5: [
-        { label: "Food", detail: "Distinct regional cuisines" },
-        { label: "Arts", detail: "Architecture, design, and visual arts" },
-        { label: "Heritage", detail: "Local traditions across regions" },
-    ],
-    6: [
-        { label: "Celebrations", detail: "Diwali celebrated by many communities" },
-        { label: "Food", detail: "Richly varied regional cuisines" },
-        { label: "Arts", detail: "Classical and folk performance traditions" },
-    ],
-};
+// Build the highlights list (celebrations, food, a tradition) from the country's cultural data.
+function getCulturalHighlights(
+    countryId: number,
+): { label: string; detail: string }[] {
+    const information = culturalInformation.find(
+        (item) => item.countryId === countryId,
+    );
 
+    if (!information) {
+        return [];
+    }
+
+    return [
+        { label: "Celebrations", detail: information.celebrations.join(", ") },
+        { label: "Food", detail: information.cuisine.join(", ") },
+        { label: "Traditions", detail: information.traditions[0] },
+    ];
+}
+
+// Every region, listed once.
 const regions = Array.from(new Set(countries.map((country) => country.region)));
 
+// Interactive cultural map: pick a region or a country marker to see its highlights.
+// PLACEHOLDER (Issue 7): Check the map markers and labels on small phones (they can overlap).
+// PLACEHOLDER (Issue 8): Check colors match the design system (#166534 / #D97706).
 export default function CulturalMap() {
+    // The selected country (starts on Ghana, id 2).
     const [selectedCountryId, setSelectedCountryId] = useState(2);
     const selectedCountry =
         countries.find((country) => country.id === selectedCountryId) ??
         countries[0];
 
+    // Selecting a region selects the first country in it.
     function selectRegion(region: string) {
         const firstCountryInRegion = countries.find(
             (country) => country.region === region,
@@ -82,6 +75,7 @@ export default function CulturalMap() {
 
     return (
         <main className="min-h-screen bg-slate-50 text-slate-900">
+            {/* Page banner */}
             <section className="bg-green-900 px-5 py-12 text-white sm:px-8 sm:py-16">
                 <div className="mx-auto max-w-7xl">
                     <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-orange-300">
@@ -112,6 +106,7 @@ export default function CulturalMap() {
                     </p>
                 </div>
 
+                {/* Region buttons */}
                 <div
                     aria-label="Filter countries by region"
                     className="mb-7 flex gap-2 overflow-x-auto pb-2"
@@ -138,6 +133,7 @@ export default function CulturalMap() {
                 </div>
 
                 <div className="grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(19rem,0.85fr)]">
+                    {/* Map with clickable country markers */}
                     <section
                         aria-labelledby="map-heading"
                         className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
@@ -164,6 +160,7 @@ export default function CulturalMap() {
                             role="group"
                             aria-label="Countries on the world map"
                         >
+                            {/* Simple drawn world map (background only) */}
                             <svg
                                 className="absolute inset-0 h-full w-full"
                                 viewBox="0 0 1000 500"
@@ -213,6 +210,7 @@ export default function CulturalMap() {
                                 />
                             </svg>
 
+                            {/* One marker button per country; countries without a position are skipped */}
                             {countries.map((country) => {
                                 const position = mapPositions[country.id];
                                 if (!position) return null;
@@ -257,6 +255,7 @@ export default function CulturalMap() {
                             })}
                         </div>
 
+                        {/* Marker legend */}
                         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-5 py-4 text-xs text-slate-600 sm:px-6">
                             <span className="inline-flex items-center gap-2">
                                 <span className="h-2.5 w-2.5 rounded-full bg-orange-500" />
@@ -269,6 +268,7 @@ export default function CulturalMap() {
                         </div>
                     </section>
 
+                    {/* Selected country panel: facts, highlights, and a link to its profile */}
                     <aside
                         aria-live="polite"
                         aria-labelledby="country-heading"
@@ -301,7 +301,7 @@ export default function CulturalMap() {
                                 Cultural highlights
                             </h3>
                             <ul className="mt-4 space-y-4">
-                                {culturalHighlights[selectedCountry.id]?.map(
+                                {getCulturalHighlights(selectedCountry.id).map(
                                     (highlight) => (
                                         <li
                                             key={highlight.label}
@@ -337,6 +337,7 @@ export default function CulturalMap() {
                     </aside>
                 </div>
 
+                {/* Note about cultural variety */}
                 <div className="mt-8 rounded-2xl border border-orange-100 bg-orange-50 px-5 py-4 text-sm leading-6 text-slate-700">
                     Cultural practices vary within every country and community.
                     These highlights are starting points for further discovery.

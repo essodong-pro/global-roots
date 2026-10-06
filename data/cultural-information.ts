@@ -1,6 +1,7 @@
+// Cultural details for one country (one record per country).
 export type CulturalInformation = {
     id: number;
-    countryId: number;
+    countryId: number; // Links to Country.id
     history: string;
     traditions: string[];
     etiquette: string[];
@@ -8,6 +9,7 @@ export type CulturalInformation = {
     cuisine: string[];
 };
 
+// Mock cultural details, one entry per country.
 export const culturalInformation: CulturalInformation[] = [
     {
         id: 1,

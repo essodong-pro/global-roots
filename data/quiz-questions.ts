@@ -1,11 +1,13 @@
+// A multiple-choice quiz question.
 export type QuizQuestion = {
     id: number;
-    countryId: number;
+    countryId: number; // Links to Country.id
     question: string;
-    options: string[];
-    correctAnswer: string;
+    options: string[]; // Answer choices, shown in this order
+    correctAnswer: string; // Must match one of the options exactly
 };
 
+// Mock quiz questions.
 export const quizQuestions: QuizQuestion[] = [
     {
         id: 1,

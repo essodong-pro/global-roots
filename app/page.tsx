@@ -1,35 +1,37 @@
 import Link from "next/link";
-import { getCountries } from "@/lib/countries";
 
-// TEMPORARY home for Issue 2 testing.
-// PLACEHOLDER (Issue 1): Replace this page (or move these links) with the searchable country directory.
-// PLACEHOLDER (Issue 3): Map entry point can live in nav later.
-// PLACEHOLDER (Issue 8 / 7): Style and make responsive later.
-
+// Home page: explains what GlobalRoots is and links to each section.
+// PLACEHOLDER (Issue 8): Style this page with Tailwind (hero section, feature cards).
+// PLACEHOLDER (Issue 7): Make the layout responsive for mobile, tablet, and desktop.
 export default function Home() {
-  const countries = getCountries();
-
   return (
-    <main style={{ padding: "1.5rem" }}>
+    <main className="flex-1 p-6">
+      {/* Intro: purpose and audience */}
       <h1>GlobalRoots</h1>
-      <p>Temporary sample links (Issue 2). Teammates: delete or replace this block.</p>
+      <p>
+        Discover, learn about, and compare cultural traditions, languages,
+        customs, and cuisines from around the world. Built for students,
+        travelers, and cultural enthusiasts.
+      </p>
 
-      <h2>Sample countries</h2>
-      <ul>
-        {countries.map((country) => (
-          <li key={country.id}>
-            <Link href={`/countries/${country.id}`}>{country.name}</Link>
-          </li>
-        ))}
-      </ul>
-
-      <h2>API smoke checks</h2>
+      {/* Links to the main sections */}
+      <h2>Start exploring</h2>
       <ul>
         <li>
-          <Link href="/api/countries">GET /api/countries</Link>
+          <Link href="/countries">Country Profiles</Link>: search nations and
+          read about their history, etiquette, and celebrations.
         </li>
         <li>
-          <Link href="/api/countries/1">GET /api/countries/1</Link>
+          <Link href="/map">Cultural Map</Link>: pick a region or country to
+          see its cultural highlights.
+        </li>
+        <li>
+          <Link href="/stories">Stories &amp; Recipes</Link>: read and share
+          personal stories and traditional recipes.
+        </li>
+        <li>
+          <Link href="/quiz">Quiz</Link>: test your knowledge of world customs
+          and traditions.
         </li>
       </ul>
     </main>

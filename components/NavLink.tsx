@@ -1,67 +1,44 @@
 "use client";
 
-// Use Next's client-side links for app navigation.
 import Link from "next/link";
-
-// Read the active URL so navigation can reflect the current section.
 import { usePathname } from "next/navigation";
 
-// These are the app's real destinations. Individual meeting details are linked
-// from MeetingCard rather than listed as fixed navigation links.
-
-// Keep only top-level destinations here; meeting detail links live on their cards.
+// The main sections of the site, in menu order.
 const links = [
-    
     { href: "/", label: "Home" },
-    
+    { href: "/countries", label: "Countries" },
     { href: "/map", label: "Cultural Map" },
-    
+    { href: "/stories", label: "Stories" },
+    { href: "/quiz", label: "Quiz" },
 ];
 
-// Mark the current top-level destination for visual and assistive-technology users.
+// Navigation links; the current section is highlighted.
+// PLACEHOLDER (Issue 7): The links sit in one row; make them wrap or collapse on small screens.
+// PLACEHOLDER (Issue 8): Use the design system colors for the active link.
 export default function NavLinks() {
-
-    // The pathname changes automatically as the user navigates between routes.
+    // Current URL path, used to find the active link.
     const pathname = usePathname();
 
-    // Render each configured destination with its current-page state.
     return (
-        
         <ul className="flex gap-6">
-
-            {/* Generate navigation items from the small destination table above. */}
             {links.map(({ href, label }) => {
-
-                // Treat nested meeting detail/edit URLs as part of the meetings section.
+                // Active if it's this page or a page inside it (e.g. /countries/3).
                 const isActive =
                     pathname === href ||
-                    (href === "/meetings" && pathname.startsWith("/meetings/") && pathname !== "/meetings/current");
+                    (href !== "/" && pathname.startsWith(`${href}/`));
 
-                // Use the destination as a stable key and expose active state semantically.
                 return (
-
                     <li key={href}>
-
                         <Link
-                            
                             href={href}
-
                             aria-current={isActive ? "page" : undefined}
-
                             className={isActive ? "font-semibold text-yellow-300 underline" : "text-white hover:text-gray-300"}
                         >
                             {label}
-
                         </Link>
-
                     </li>
-
                 );
-
             })}
-
         </ul>
-
     );
-
 }
