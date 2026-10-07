@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { getCountries } from "@/lib/countries";
+import { getCountries } from "@/lib/mock-data-service";
 
-// GET /api/countries
-// PLACEHOLDER (Issue 6): keep this endpoint; replace getCountries() with real service later.
+// GET /api/countries: returns every country.
 export async function GET() {
   return NextResponse.json(getCountries());
 }

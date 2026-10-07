@@ -4,9 +4,14 @@ import { useMemo, useState } from "react";
 import CountryCard from "@/components/CountryCard";
 import { countries } from "@/data/countries";
 
+// Country directory page (/countries): search box plus a grid of country cards.
+// PLACEHOLDER (Issue 8): Check colors match the design system (#166534 / #D97706).
+// PLACEHOLDER (Issue 7): Check the grid and search box on mobile and tablet.
 export default function CountriesPage() {
+    // What the user typed in the search box.
     const [searchTerm, setSearchTerm] = useState("");
 
+    // Countries whose name, region, or capital match the search.
     const filteredCountries = useMemo(() => {
         const search = searchTerm.toLowerCase().trim();
 
@@ -24,6 +29,7 @@ export default function CountriesPage() {
 
     return (
         <main className="min-h-screen bg-slate-50">
+            {/* Page banner */}
             <section className="bg-green-800 px-6 py-16 text-white">
                 <div className="mx-auto max-w-6xl">
                     <p className="mb-2 font-medium text-orange-300">
@@ -42,6 +48,7 @@ export default function CountriesPage() {
             </section>
 
             <section className="mx-auto max-w-6xl px-6 py-10">
+                {/* Search box */}
                 <div className="mb-8">
                     <label
                         htmlFor="country-search"
@@ -60,6 +67,7 @@ export default function CountriesPage() {
                     />
                 </div>
 
+                {/* Heading and result count */}
                 <div className="mb-6 flex items-center justify-between">
                     <h2 className="text-2xl font-bold text-gray-800">
                         Explore Countries
@@ -71,6 +79,7 @@ export default function CountriesPage() {
                     </p>
                 </div>
 
+                {/* Country cards, or an empty message if nothing matches */}
                 {filteredCountries.length > 0 ? (
                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {filteredCountries.map((country) => (

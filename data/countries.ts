@@ -1,13 +1,17 @@
+// Basic facts about a country.
 export type Country = {
-    id: number;
+    id: number; // Unique id, used in URLs like /countries/1
     name: string;
-    region: string;
+    region: string; // Used to group countries on the map
     capital: string;
     language: string;
     currency: string;
-    description: string;
+    description: string; // Short summary shown on cards
 };
 
+// Mock list of countries.
+// When adding a country, also add its cultural info, a map position in
+// components/CulturalMap.tsx, and (optionally) stories and quiz questions.
 export const countries: Country[] = [
     {
         id: 1,

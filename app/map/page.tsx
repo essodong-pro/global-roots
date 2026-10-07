@@ -1,20 +1,14 @@
 import type { Metadata } from "next";
 import CulturalMap from "@/components/CulturalMap";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
 
+// Browser tab title and description for this page.
 export const metadata: Metadata = {
     title: "Cultural Map | GlobalRoots",
     description:
         "Explore cultural highlights by region and country with the GlobalRoots interactive cultural map.",
 };
 
+// Cultural map page (/map): the map itself lives in the CulturalMap component.
 export default function MapPage() {
-    return (
-        <>
-            <Header />
-            <CulturalMap />
-            <Footer />
-        </>
-    );
+    return <CulturalMap />;
 }
