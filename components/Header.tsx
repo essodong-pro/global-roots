@@ -2,12 +2,12 @@
 
 // Subscribe to the client clock without introducing an effect-driven state update.
 import { useSyncExternalStore } from "react";
+import Link from "next/link";
 
 // Reuse the shared navigation links in the global header.
 import NavLinks from "@/components/NavLink";
 
-// Keep the displayed ward name in one place for easy site-wide editing.
-const WARD_NAME = "Osigwe Ward";
+const SITE_NAME = "GlobalRoots";
 
 // Format the client's current date according to its locale.
 const getCurrentDate = () =>
@@ -26,30 +26,31 @@ export default function Header() {
 
     // Keep ward identity and navigation in the same global shell.
     return (
-        <header className="bg-gray-800 p-4 text-white shadow-md">
-
-            <div className="mx-auto flex max-w-4xl flex-col gap-1">
-                {/* Use the shared constant so the ward name is not repeated in markup. */}
-                <div id="header-title" className="text-2xl font-bold">{WARD_NAME}</div>
-
-                {/* Provide machine-readable date metadata only after the real date is available. */}
-                <time dateTime={currentDate === "Today" ? undefined : new Date().toISOString().slice(0, 10)} className="text-sm text-gray-300">
-
-                    {currentDate}
-
-                </time>
-
+        <header className="bg-green-900 text-white shadow-md">
+            <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between md:py-5">
+                <div className="flex min-w-0 flex-col gap-1">
+                    <Link
+                        href="/"
+                        id="header-title"
+                        className="w-fit text-xl font-bold tracking-tight sm:text-2xl"
+                    >
+                        {SITE_NAME}
+                    </Link>
+                    <time
+                        dateTime={
+                            currentDate === "Today"
+                                ? undefined
+                                : new Date().toISOString().slice(0, 10)
+                        }
+                        className="text-xs text-green-100 sm:text-sm"
+                    >
+                        {currentDate}
+                    </time>
+                </div>
+                <nav aria-label="Main navigation" className="min-w-0">
+                    <NavLinks />
+                </nav>
             </div>
-
-            <nav className="mx-auto mt-4 flex max-w-4xl items-center justify-between">
-
-                {/* Keep active route indication consistent across the site. */}
-                <NavLinks />
-                
-            </nav>
-            
         </header>
-        
     );
-    
 }

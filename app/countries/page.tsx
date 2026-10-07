@@ -23,8 +23,8 @@ export default function CountriesPage() {
     }, [searchTerm]);
 
     return (
-        <main className="min-h-screen bg-slate-50">
-            <section className="bg-green-800 px-6 py-16 text-white">
+        <main className="flex-1 bg-slate-50">
+            <section className="bg-green-800 px-4 py-12 text-white sm:px-6 sm:py-16">
                 <div className="mx-auto max-w-6xl">
                     <p className="mb-2 font-medium text-orange-300">
                         Discover the world
@@ -41,7 +41,7 @@ export default function CountriesPage() {
                 </div>
             </section>
 
-            <section className="mx-auto max-w-6xl px-6 py-10">
+            <section className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
                 <div className="mb-8">
                     <label
                         htmlFor="country-search"
@@ -60,7 +60,7 @@ export default function CountriesPage() {
                     />
                 </div>
 
-                <div className="mb-6 flex items-center justify-between">
+                <div className="mb-6 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                     <h2 className="text-2xl font-bold text-gray-800">
                         Explore Countries
                     </h2>

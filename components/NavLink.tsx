@@ -6,16 +6,10 @@ import Link from "next/link";
 // Read the active URL so navigation can reflect the current section.
 import { usePathname } from "next/navigation";
 
-// These are the app's real destinations. Individual meeting details are linked
-// from MeetingCard rather than listed as fixed navigation links.
-
-// Keep only top-level destinations here; meeting detail links live on their cards.
 const links = [
-    
     { href: "/", label: "Home" },
-    
+    { href: "/countries", label: "Countries" },
     { href: "/map", label: "Cultural Map" },
-    
 ];
 
 // Mark the current top-level destination for visual and assistive-technology users.
@@ -27,41 +21,25 @@ export default function NavLinks() {
     // Render each configured destination with its current-page state.
     return (
         
-        <ul className="flex gap-6">
-
-            {/* Generate navigation items from the small destination table above. */}
+        <ul className="flex flex-wrap gap-1">
             {links.map(({ href, label }) => {
-
-                // Treat nested meeting detail/edit URLs as part of the meetings section.
-                const isActive =
-                    pathname === href ||
-                    (href === "/meetings" && pathname.startsWith("/meetings/") && pathname !== "/meetings/current");
-
-                // Use the destination as a stable key and expose active state semantically.
+                const isActive = pathname === href || pathname.startsWith(`${href}/`);
                 return (
-
                     <li key={href}>
-
                         <Link
-                            
                             href={href}
-
                             aria-current={isActive ? "page" : undefined}
-
-                            className={isActive ? "font-semibold text-yellow-300 underline" : "text-white hover:text-gray-300"}
+                            className={`inline-flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-white/10 focus-visible:outline-white ${
+                                isActive
+                                    ? "bg-white/15 text-white"
+                                    : "text-green-50 hover:text-white"
+                            }`}
                         >
                             {label}
-
                         </Link>
-
                     </li>
-
                 );
-
             })}
-
         </ul>
-
     );
-
 }

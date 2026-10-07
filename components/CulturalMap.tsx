@@ -81,7 +81,7 @@ export default function CulturalMap() {
     }
 
     return (
-        <main className="min-h-screen bg-slate-50 text-slate-900">
+        <main className="flex-1 bg-slate-50 text-slate-900">
             <section className="bg-green-900 px-5 py-12 text-white sm:px-8 sm:py-16">
                 <div className="mx-auto max-w-7xl">
                     <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-orange-300">
@@ -114,6 +114,7 @@ export default function CulturalMap() {
 
                 <div
                     aria-label="Filter countries by region"
+                    role="group"
                     className="mb-7 flex gap-2 overflow-x-auto pb-2"
                 >
                     {regions.map((region) => {
