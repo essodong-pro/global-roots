@@ -1,5 +1,6 @@
 "use client";
 
+// Let visitors search and browse country profiles in a responsive grid.
 import { useMemo, useState } from "react";
 import CountryCard from "@/components/CountryCard";
 import { countries } from "@/data/countries";

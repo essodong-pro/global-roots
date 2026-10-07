@@ -1,5 +1,6 @@
 "use client";
 
+// Render the shared, responsive site header and localized date.
 // Subscribe to the client clock without introducing an effect-driven state update.
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
@@ -24,7 +25,7 @@ export default function Header() {
     // Switch from the server snapshot to the browser's localized date after hydration.
     const currentDate = useSyncExternalStore(subscribeToDate, getCurrentDate, getServerDate);
 
-    // Keep ward identity and navigation in the same global shell.
+    // Keep site identity and primary navigation together in the global shell.
     return (
         <header className="bg-green-900 text-white shadow-md">
             <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between md:py-5">

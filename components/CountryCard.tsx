@@ -1,3 +1,4 @@
+// Present one country summary with a touch-friendly profile link.
 import Link from "next/link";
 import type { Country } from "@/data/countries";
 
@@ -6,6 +7,8 @@ type CountryCardProps = {
 };
 
 export default function CountryCard({ country }: CountryCardProps) {
+    const profileId = country.profileId ?? country.id;
+
     return (
         <article className="flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
             <div className="mb-4">
@@ -35,7 +38,7 @@ export default function CountryCard({ country }: CountryCardProps) {
             </div>
 
             <Link
-                href={`/countries/${country.id}`}
+                href={`/countries/${profileId}`}
                 className="rounded-lg bg-green-700 px-4 py-2 text-center font-medium text-white transition hover:bg-green-800"
             >
                 Explore Culture

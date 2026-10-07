@@ -1,3 +1,4 @@
+// Render a responsive country profile and handle invalid or missing IDs.
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCountryById } from "@/lib/countries";

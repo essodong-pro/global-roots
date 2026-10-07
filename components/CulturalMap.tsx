@@ -1,5 +1,6 @@
 "use client";
 
+// Provide an interactive, responsive map and country-specific cultural highlights.
 import Link from "next/link";
 import { useState } from "react";
 import { countries } from "@/data/countries";
@@ -11,6 +12,7 @@ const mapPositions: Record<number, { x: number; y: number }> = {
     4: { x: 34, y: 70 },
     5: { x: 51, y: 38 },
     6: { x: 68, y: 55 },
+    7: { x: 55, y: 59 },
 };
 
 const regionHighlights: Record<string, string> = {
@@ -59,6 +61,11 @@ const culturalHighlights: Record<
         { label: "Celebrations", detail: "Diwali celebrated by many communities" },
         { label: "Food", detail: "Richly varied regional cuisines" },
         { label: "Arts", detail: "Classical and folk performance traditions" },
+    ],
+    7: [
+        { label: "Music", detail: "Afrobeats and many regional music traditions" },
+        { label: "Food", detail: "Jollof rice and diverse regional cuisines" },
+        { label: "Celebrations", detail: "Festivals reflecting Nigeria's many communities" },
     ],
 };
 
@@ -327,7 +334,7 @@ export default function CulturalMap() {
                         </div>
 
                         <Link
-                            href={`/countries/${selectedCountry.id}`}
+                            href={`/countries/${selectedCountry.profileId ?? selectedCountry.id}`}
                             className="mt-7 inline-flex w-full items-center justify-center rounded-xl bg-green-800 px-4 py-3 text-sm font-semibold text-white transition hover:bg-green-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800"
                         >
                             Explore {selectedCountry.name} culture

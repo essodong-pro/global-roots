@@ -1,5 +1,6 @@
 "use client";
 
+// Render responsive primary navigation and announce the current route.
 // Use Next's client-side links for app navigation.
 import Link from "next/link";
 

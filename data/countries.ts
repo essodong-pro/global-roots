@@ -1,5 +1,6 @@
 export type Country = {
     id: number;
+    profileId?: number;
     name: string;
     region: string;
     capital: string;
@@ -68,5 +69,16 @@ export const countries: Country[] = [
         currency: "Indian rupee",
         description:
             "India is home to many languages, religions, cuisines, celebrations, clothing styles, and cultural traditions.",
+    },
+    {
+        id: 7,
+        profileId: 1,
+        name: "Nigeria",
+        region: "West Africa",
+        capital: "Abuja",
+        language: "English",
+        currency: "Nigerian naira",
+        description:
+            "Nigeria is home to hundreds of ethnic groups and languages, with vibrant music, food, festivals, and cultural traditions.",
     },
 ];

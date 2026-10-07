@@ -1,3 +1,4 @@
+// Provide the responsive footer shared by every route.
 export default function Footer() {
   return (
     <footer className="mt-auto bg-slate-900 px-4 py-6 text-center text-sm text-slate-100 sm:px-6">

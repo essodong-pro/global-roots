@@ -1,8 +1,14 @@
+// Introduce GlobalRoots and feature country profiles on the home page.
 import Link from "next/link";
 import CountryCard from "@/components/CountryCard";
 import { countries } from "@/data/countries";
 
 export default function Home() {
+  const nigeria = countries.find((country) => country.name === "Nigeria");
+  const featuredCountries = nigeria
+    ? [nigeria, ...countries.slice(0, 3)]
+    : countries.slice(0, 3);
+
   return (
     <main className="flex-1">
       <section className="bg-green-800 px-4 py-14 text-white sm:px-6 sm:py-20 lg:py-24">
@@ -52,7 +58,7 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {countries.slice(0, 3).map((country) => (
+          {featuredCountries.map((country) => (
             <CountryCard key={country.id} country={country} />
           ))}
         </div>

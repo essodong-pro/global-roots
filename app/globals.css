@@ -1,3 +1,4 @@
+/* Load Tailwind, define shared theme tokens, and keep global accessibility behavior. */
 @import "tailwindcss";
 
 :root {
@@ -10,17 +11,6 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  min-width: 320px;
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
 html {

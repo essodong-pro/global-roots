@@ -1,3 +1,4 @@
+// Wrap every route with the shared responsive shell and document metadata.
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Footer from "@/components/Footer";
@@ -26,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
         <a
           href="#main-content"
           className="sr-only z-50 rounded-md bg-white px-4 py-2 text-green-900 focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
@@ -34,7 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to main content
         </a>
         <Header />
-        <div id="main-content" className="flex flex-1 flex-col">
+        <div id="main-content" className="flex flex-1 flex-col" tabIndex={-1}>
           {children}
         </div>
         <Footer />
