@@ -3,6 +3,7 @@ import Link from "next/link";
 import CountryCard from "@/components/CountryCard";
 import { countries } from "@/data/countries";
 
+// Home page: introduces GlobalRoots and links to its main features.
 export default function Home() {
   const nigeria = countries.find((country) => country.name === "Nigeria");
   const featuredCountries = nigeria
@@ -61,6 +62,23 @@ export default function Home() {
           {featuredCountries.map((country) => (
             <CountryCard key={country.id} country={country} />
           ))}
+        </div>
+      </section>
+
+      <section className="border-t border-slate-200 bg-white px-4 py-8 sm:px-6">
+        <div className="mx-auto flex max-w-7xl flex-wrap gap-3">
+          <Link
+            href="/stories"
+            className="inline-flex min-h-11 items-center rounded-lg border border-green-800 px-4 py-2 font-semibold text-green-900 hover:bg-green-50"
+          >
+            Read and share stories
+          </Link>
+          <Link
+            href="/quiz"
+            className="inline-flex min-h-11 items-center rounded-lg border border-green-800 px-4 py-2 font-semibold text-green-900 hover:bg-green-50"
+          >
+            Take the culture quiz
+          </Link>
         </div>
       </section>
 

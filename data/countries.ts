@@ -1,20 +1,24 @@
+// Basic facts about a country.
 export type Country = {
+    // IDs are shared by country routes, cultural records, stories, and quizzes.
     id: number;
-    profileId?: number;
     name: string;
-    region: string;
+    region: string; // Used to group countries on the map
     capital: string;
     language: string;
     currency: string;
-    description: string;
+    description: string; // Short summary shown on cards
 };
 
+// Mock list of countries.
+// When adding a country, also add its cultural info, a map position in
+// components/CulturalMap.tsx, and (optionally) stories and quiz questions.
 export const countries: Country[] = [
     {
         id: 1,
         name: "Togo",
         region: "West Africa",
-        capital: "Lomé",
+        capital: "Lome",
         language: "French",
         currency: "West African CFA franc",
         description:
@@ -44,7 +48,7 @@ export const countries: Country[] = [
         id: 4,
         name: "Brazil",
         region: "South America",
-        capital: "Brasília",
+        capital: "Brasilia",
         language: "Portuguese",
         currency: "Brazilian real",
         description:
@@ -72,7 +76,6 @@ export const countries: Country[] = [
     },
     {
         id: 7,
-        profileId: 1,
         name: "Nigeria",
         region: "West Africa",
         capital: "Abuja",

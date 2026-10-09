@@ -5,9 +5,12 @@ import { useMemo, useState } from "react";
 import CountryCard from "@/components/CountryCard";
 import { countries } from "@/data/countries";
 
+// Country directory page (/countries): search box plus a responsive country grid.
 export default function CountriesPage() {
+    // What the user typed in the search box.
     const [searchTerm, setSearchTerm] = useState("");
 
+    // Countries whose name, region, or capital match the search.
     const filteredCountries = useMemo(() => {
         const search = searchTerm.toLowerCase().trim();
 
@@ -72,6 +75,7 @@ export default function CountriesPage() {
                     </p>
                 </div>
 
+                {/* Country cards, or an empty message if nothing matches */}
                 {filteredCountries.length > 0 ? (
                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {filteredCountries.map((country) => (

@@ -6,11 +6,11 @@
   --foreground: #1f2937;
 }
 
+/* Make the variables above available as Tailwind theme values. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 html {

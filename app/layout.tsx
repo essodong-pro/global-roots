@@ -15,12 +15,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Default title and description for every page.
 export const metadata: Metadata = {
   title: "GlobalRoots",
   description:
     "Explore country cultural profiles: history, etiquette, and celebrations.",
 };
 
+// Root layout: wraps every page with the shared header and footer.
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html

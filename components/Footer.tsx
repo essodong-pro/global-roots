@@ -7,7 +7,7 @@ export default function Footer() {
           Copyright &copy; {new Date().getFullYear()} | Osigwe Uchechukwu
           DavidCaleb, Essodong N’GNAMA and Kevin Samuel Pacheco García  | All rights reserved
         </p>
-        <p className="text-slate-300">Built by the Team with Next.js and Tailwind CSS</p>
+        <p className="text-slate-300">Built by the Team with Next.js and Tailwind CSS        </p>
       </div>
     </footer>
   );

@@ -1,30 +1,26 @@
 "use client";
 
-// Render responsive primary navigation and announce the current route.
-// Use Next's client-side links for app navigation.
 import Link from "next/link";
-
-// Read the active URL so navigation can reflect the current section.
 import { usePathname } from "next/navigation";
 
 const links = [
     { href: "/", label: "Home" },
     { href: "/countries", label: "Countries" },
     { href: "/map", label: "Cultural Map" },
+    { href: "/stories", label: "Stories" },
+    { href: "/quiz", label: "Quiz" },
 ];
 
-// Mark the current top-level destination for visual and assistive-technology users.
 export default function NavLinks() {
-
-    // The pathname changes automatically as the user navigates between routes.
     const pathname = usePathname();
 
-    // Render each configured destination with its current-page state.
     return (
-        
         <ul className="flex flex-wrap gap-1">
             {links.map(({ href, label }) => {
-                const isActive = pathname === href || pathname.startsWith(`${href}/`);
+                const isActive =
+                    pathname === href ||
+                    (href !== "/" && pathname.startsWith(`${href}/`));
+
                 return (
                     <li key={href}>
                         <Link
