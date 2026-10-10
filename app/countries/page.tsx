@@ -1,12 +1,11 @@
 "use client";
 
+// Let visitors search and browse country profiles in a responsive grid.
 import { useMemo, useState } from "react";
 import CountryCard from "@/components/CountryCard";
 import { countries } from "@/data/countries";
 
-// Country directory page (/countries): search box plus a grid of country cards.
-// PLACEHOLDER (Issue 8): Check colors match the design system (#166534 / #D97706).
-// PLACEHOLDER (Issue 7): Check the grid and search box on mobile and tablet.
+// Country directory page (/countries): search box plus a responsive country grid.
 export default function CountriesPage() {
     // What the user typed in the search box.
     const [searchTerm, setSearchTerm] = useState("");
@@ -28,9 +27,8 @@ export default function CountriesPage() {
     }, [searchTerm]);
 
     return (
-        <main className="min-h-screen bg-slate-50">
-            {/* Page banner */}
-            <section className="bg-green-800 px-6 py-16 text-white">
+        <main className="flex-1 bg-slate-50">
+            <section className="bg-green-800 px-4 py-12 text-white sm:px-6 sm:py-16">
                 <div className="mx-auto max-w-6xl">
                     <p className="mb-2 font-medium text-orange-300">
                         Discover the world
@@ -47,8 +45,7 @@ export default function CountriesPage() {
                 </div>
             </section>
 
-            <section className="mx-auto max-w-6xl px-6 py-10">
-                {/* Search box */}
+            <section className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
                 <div className="mb-8">
                     <label
                         htmlFor="country-search"
@@ -67,8 +64,7 @@ export default function CountriesPage() {
                     />
                 </div>
 
-                {/* Heading and result count */}
-                <div className="mb-6 flex items-center justify-between">
+                <div className="mb-6 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                     <h2 className="text-2xl font-bold text-gray-800">
                         Explore Countries
                     </h2>

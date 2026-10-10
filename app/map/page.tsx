@@ -1,3 +1,4 @@
+// Supply map-page metadata and mount the interactive cultural map.
 import type { Metadata } from "next";
 import CulturalMap from "@/components/CulturalMap";
 

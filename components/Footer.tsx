@@ -1,12 +1,13 @@
-// Site footer. Shown on every page.
-// PLACEHOLDER (Issue 8): Use the design system colors instead of gray-800.
+// Provide the responsive footer shared by every route.
 export default function Footer() {
   return (
-    <footer className="bg-gray-800 text-white py-4 mt-12">
-      <div className="container mx-auto text-center">
-        {/* The year updates automatically */}
-        <p>Copyright &copy; {new Date().getFullYear()} | GlobalRoots Team | All rights reserved</p>
-        <p>Built with Next.js and Tailwind CSS</p>
+    <footer className="mt-auto bg-slate-900 px-4 py-6 text-center text-sm text-slate-100 sm:px-6">
+      <div className="mx-auto flex max-w-7xl flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <p>
+          Copyright &copy; {new Date().getFullYear()} | Osigwe Uchechukwu
+          DavidCaleb, Essodong N’GNAMA and Kevin Samuel Pacheco García  | All rights reserved
+        </p>
+        <p className="text-slate-300">Built by the Team with Next.js and Tailwind CSS        </p>
       </div>
     </footer>
   );

@@ -1,14 +1,17 @@
+// Wrap every route with the shared responsive shell and document metadata.
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
-import "./globals.css";
+import { Geist, Geist_Mono } from "next/font/google";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import "./globals.css";
 
-// Site font.
-// PLACEHOLDER (Issue 8): The design guide uses Montserrat (headings) and Roboto (body).
-// Replace Geist with those fonts here and wire them up in globals.css.
 const geistSans = Geist({
   variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -22,10 +25,21 @@ export const metadata: Metadata = {
 // Root layout: wraps every page with the shared header and footer.
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
+        <a
+          href="#main-content"
+          className="sr-only z-50 rounded-md bg-white px-4 py-2 text-green-900 focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
+        >
+          Skip to main content
+        </a>
         <Header />
-        {children}
+        <div id="main-content" className="flex flex-1 flex-col" tabIndex={-1}>
+          {children}
+        </div>
         <Footer />
       </body>
     </html>

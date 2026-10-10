@@ -1,3 +1,4 @@
+// Present one country summary with a touch-friendly profile link.
 import Link from "next/link";
 import type { Country } from "@/data/countries";
 
@@ -42,7 +43,7 @@ export default function CountryCard({ country }: CountryCardProps) {
             {/* Link to the country detail page */}
             <Link
                 href={`/countries/${country.id}`}
-                className="rounded-lg bg-green-700 px-4 py-2 text-center font-medium text-white transition hover:bg-green-800"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg bg-green-700 px-4 py-2 text-center font-medium text-white transition hover:bg-green-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800"
             >
                 Explore Culture
             </Link>

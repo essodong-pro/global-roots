@@ -1,5 +1,6 @@
 "use client";
 
+// Provide an interactive, responsive map and country-specific cultural highlights.
 import Link from "next/link";
 import { useState } from "react";
 import { countries } from "@/data/countries";
@@ -14,6 +15,7 @@ const mapPositions: Record<number, { x: number; y: number }> = {
     4: { x: 34, y: 70 },
     5: { x: 51, y: 38 },
     6: { x: 68, y: 55 },
+    7: { x: 55, y: 59 },
 };
 
 // Short description shown for each region.
@@ -38,6 +40,15 @@ function getCulturalHighlights(
         (item) => item.countryId === countryId,
     );
 
+    if (!information && countryId === 7) {
+        // Nigeria was added to the directory before its shared cultural data.
+        return [
+            { label: "Music", detail: "Afrobeats and many regional music traditions" },
+            { label: "Food", detail: "Jollof rice and diverse regional cuisines" },
+            { label: "Celebrations", detail: "Festivals reflecting Nigeria's many communities" },
+        ];
+    }
+
     if (!information) {
         return [];
     }
@@ -53,8 +64,6 @@ function getCulturalHighlights(
 const regions = Array.from(new Set(countries.map((country) => country.region)));
 
 // Interactive cultural map: pick a region or a country marker to see its highlights.
-// PLACEHOLDER (Issue 7): Check the map markers and labels on small phones (they can overlap).
-// PLACEHOLDER (Issue 8): Check colors match the design system (#166534 / #D97706).
 export default function CulturalMap() {
     // The selected country (starts on Ghana, id 2).
     const [selectedCountryId, setSelectedCountryId] = useState(2);
@@ -74,8 +83,7 @@ export default function CulturalMap() {
     }
 
     return (
-        <main className="min-h-screen bg-slate-50 text-slate-900">
-            {/* Page banner */}
+        <main className="flex-1 bg-slate-50 text-slate-900">
             <section className="bg-green-900 px-5 py-12 text-white sm:px-8 sm:py-16">
                 <div className="mx-auto max-w-7xl">
                     <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-orange-300">
@@ -109,6 +117,7 @@ export default function CulturalMap() {
                 {/* Region buttons */}
                 <div
                     aria-label="Filter countries by region"
+                    role="group"
                     className="mb-7 flex gap-2 overflow-x-auto pb-2"
                 >
                     {regions.map((region) => {

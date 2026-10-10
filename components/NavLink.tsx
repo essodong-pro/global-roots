@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-// The main sections of the site, in menu order.
 const links = [
     { href: "/", label: "Home" },
     { href: "/countries", label: "Countries" },
@@ -12,17 +11,12 @@ const links = [
     { href: "/quiz", label: "Quiz" },
 ];
 
-// Navigation links; the current section is highlighted.
-// PLACEHOLDER (Issue 7): The links sit in one row; make them wrap or collapse on small screens.
-// PLACEHOLDER (Issue 8): Use the design system colors for the active link.
 export default function NavLinks() {
-    // Current URL path, used to find the active link.
     const pathname = usePathname();
 
     return (
-        <ul className="flex gap-6">
+        <ul className="flex flex-wrap gap-1">
             {links.map(({ href, label }) => {
-                // Active if it's this page or a page inside it (e.g. /countries/3).
                 const isActive =
                     pathname === href ||
                     (href !== "/" && pathname.startsWith(`${href}/`));
@@ -32,7 +26,11 @@ export default function NavLinks() {
                         <Link
                             href={href}
                             aria-current={isActive ? "page" : undefined}
-                            className={isActive ? "font-semibold text-yellow-300 underline" : "text-white hover:text-gray-300"}
+                            className={`inline-flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-white/10 focus-visible:outline-white ${
+                                isActive
+                                    ? "bg-white/15 text-white"
+                                    : "text-green-50 hover:text-white"
+                            }`}
                         >
                             {label}
                         </Link>
