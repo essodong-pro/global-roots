@@ -1,0 +1,165 @@
+-- Run once in the Supabase SQL Editor. User-owned rows are protected by RLS.
+create table if not exists public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  display_name text not null default '',
+  role text not null default 'member' check (role in ('member', 'admin')),
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.countries (
+  id integer primary key,
+  name text not null unique,
+  region text not null,
+  capital text not null,
+  language text not null,
+  currency text not null,
+  description text not null
+);
+
+create table if not exists public.stories (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  country_id integer not null references public.countries(id) on delete cascade,
+  title text not null check (char_length(title) between 3 and 100),
+  author text not null check (char_length(author) between 1 and 80),
+  type text not null check (type in ('story', 'recipe')),
+  content text not null check (char_length(content) between 20 and 5000),
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.saved_countries (
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  country_id integer not null references public.countries(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (user_id, country_id)
+);
+
+create index if not exists stories_country_created_idx
+  on public.stories (country_id, created_at desc);
+create index if not exists stories_user_created_idx
+  on public.stories (user_id, created_at desc);
+
+alter table public.profiles enable row level security;
+alter table public.countries enable row level security;
+alter table public.stories enable row level security;
+alter table public.saved_countries enable row level security;
+
+create policy "Profiles are readable by their owner"
+  on public.profiles for select to authenticated using (auth.uid() = id);
+create policy "Owners can update their profile"
+  on public.profiles for update to authenticated using (auth.uid() = id)
+  with check (auth.uid() = id and role = 'member');
+create policy "Anyone can read countries"
+  on public.countries for select to anon, authenticated using (true);
+create policy "Admins can create countries"
+  on public.countries for insert to authenticated
+  with check (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+create policy "Admins can update countries"
+  on public.countries for update to authenticated
+  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'))
+  with check (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+create policy "Admins can delete countries"
+  on public.countries for delete to authenticated
+  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+create policy "Stories are readable by everyone"
+  on public.stories for select to anon, authenticated using (true);
+create policy "Members can add their own stories"
+  on public.stories for insert to authenticated
+  with check (auth.uid() = user_id);
+create policy "Members can edit their own stories"
+  on public.stories for update to authenticated using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+create policy "Members can delete their own stories"
+  on public.stories for delete to authenticated using (auth.uid() = user_id);
+create policy "Members can read their saved countries"
+  on public.saved_countries for select to authenticated using (auth.uid() = user_id);
+create policy "Members can save countries"
+  on public.saved_countries for insert to authenticated
+  with check (auth.uid() = user_id);
+create policy "Members can unsave countries"
+  on public.saved_countries for delete to authenticated using (auth.uid() = user_id);
+
+create or replace function public.create_profile_for_new_user()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  insert into public.profiles (id, display_name)
+  values (new.id, coalesce(new.raw_user_meta_data ->> 'display_name', ''));
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.create_profile_for_new_user();
+
+insert into public.countries (id, name, region, capital, language, currency, description)
+values
+  (1, 'Togo', 'West Africa', 'Lome', 'French', 'West African CFA franc', 'Togo is a West African country known for its diverse cultures, traditional festivals, music, food, and coastal communities.'),
+  (2, 'Ghana', 'West Africa', 'Accra', 'English', 'Ghanaian cedi', 'Ghana is known for its rich history, colorful festivals, traditional clothing, music, and diverse cultural traditions.'),
+  (3, 'Japan', 'East Asia', 'Tokyo', 'Japanese', 'Japanese yen', 'Japan combines ancient traditions with modern culture and is known for its customs, cuisine, festivals, and arts.'),
+  (4, 'Brazil', 'South America', 'Brasilia', 'Portuguese', 'Brazilian real', 'Brazil has a diverse cultural heritage expressed through music, dance, food, festivals, and regional traditions.'),
+  (5, 'France', 'Europe', 'Paris', 'French', 'Euro', 'France has a long cultural history including cuisine, fashion, art, architecture, celebrations, and regional traditions.'),
+  (6, 'India', 'South Asia', 'New Delhi', 'Hindi and English', 'Indian rupee', 'India is home to many languages, religions, cuisines, celebrations, clothing styles, and cultural traditions.'),
+  (7, 'Nigeria', 'West Africa', 'Abuja', 'English', 'Nigerian naira', 'Nigeria is home to hundreds of ethnic groups and languages, with vibrant music, food, festivals, and cultural traditions.')
+on conflict (id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  capital = excluded.capital,
+  language = excluded.language,
+  currency = excluded.currency,
+  description = excluded.description;
+
+-- Adds countries 8–50 after the initial seven. Safe to run more than once.
+insert into public.countries (id, name, region, capital, language, currency, description)
+values
+  (8, 'Benin', 'West Africa', 'Porto-Novo', 'French', 'West African CFA franc', 'Benin is a West African country with a rich history, varied landscapes, and many living cultural traditions.'),
+  (9, 'Senegal', 'West Africa', 'Dakar', 'French', 'West African CFA franc', 'Senegal is known for its Atlantic coast, diverse communities, music, cuisine, and historic cities.'),
+  (10, 'Kenya', 'East Africa', 'Nairobi', 'Swahili and English', 'Kenyan shilling', 'Kenya has many languages and communities, with cultural life shaped by both urban and rural traditions.'),
+  (11, 'South Africa', 'Southern Africa', 'Pretoria', '12 official languages', 'South African rand', 'South Africa is a multilingual country with diverse communities, histories, landscapes, and arts.'),
+  (12, 'Egypt', 'North Africa', 'Cairo', 'Arabic', 'Egyptian pound', 'Egypt connects ancient history and contemporary life along the Nile and the Mediterranean coast.'),
+  (13, 'Morocco', 'North Africa', 'Rabat', 'Arabic and Amazigh', 'Moroccan dirham', 'Morocco''s cultural life reflects Amazigh, Arab, African, and Mediterranean influences.'),
+  (14, 'Ethiopia', 'East Africa', 'Addis Ababa', 'Amharic and other regional languages', 'Ethiopian birr', 'Ethiopia is home to many languages and communities, with distinctive foodways, music, and historic traditions.'),
+  (15, 'Madagascar', 'East Africa', 'Antananarivo', 'Malagasy and French', 'Malagasy ariary', 'Madagascar''s island cultures and biodiversity are shaped by African and Asian connections.'),
+  (16, 'China', 'East Asia', 'Beijing', 'Mandarin Chinese', 'Renminbi (yuan)', 'China''s many regions have distinct languages, cuisines, festivals, and long-standing traditions.'),
+  (17, 'South Korea', 'East Asia', 'Seoul', 'Korean', 'South Korean won', 'South Korea brings together historic customs, regional food traditions, and contemporary arts and media.'),
+  (18, 'Thailand', 'Southeast Asia', 'Bangkok', 'Thai', 'Thai baht', 'Thailand''s regional cultures are reflected in its festivals, crafts, cuisine, and everyday customs.'),
+  (19, 'Indonesia', 'Southeast Asia', 'Jakarta', 'Indonesian', 'Indonesian rupiah', 'Indonesia is an archipelago of many communities, languages, regional cuisines, and cultural traditions.'),
+  (20, 'Vietnam', 'Southeast Asia', 'Hanoi', 'Vietnamese', 'Vietnamese dong', 'Vietnam''s cultural life includes regional traditions, historic cities, craft, music, and varied cuisine.'),
+  (21, 'Philippines', 'Southeast Asia', 'Manila', 'Filipino and English', 'Philippine peso', 'The Philippines'' island communities have diverse languages, festivals, food, and local traditions.'),
+  (22, 'Nepal', 'South Asia', 'Kathmandu', 'Nepali and other regional languages', 'Nepalese rupee', 'Nepal''s many communities and landscapes shape a rich range of customs, arts, and celebrations.'),
+  (23, 'Pakistan', 'South Asia', 'Islamabad', 'Urdu and English', 'Pakistani rupee', 'Pakistan has varied regional languages, textile traditions, music, architecture, and food cultures.'),
+  (24, 'Australia', 'Oceania', 'Canberra', 'English', 'Australian dollar', 'Australia''s cultural story includes Aboriginal and Torres Strait Islander peoples and many migrant communities.'),
+  (25, 'New Zealand', 'Oceania', 'Wellington', 'English, Māori, and New Zealand Sign Language', 'New Zealand dollar', 'New Zealand''s cultural identity includes Māori heritage, Pacific connections, and many contemporary communities.'),
+  (26, 'Mexico', 'North America', 'Mexico City', 'Spanish and Indigenous languages', 'Mexican peso', 'Mexico''s regional cultures draw on Indigenous heritage and centuries of local and global exchange.'),
+  (27, 'Canada', 'North America', 'Ottawa', 'English and French', 'Canadian dollar', 'Canada is home to Indigenous peoples and diverse communities across its regions and languages.'),
+  (28, 'United States', 'North America', 'Washington, D.C.', 'English (widely used)', 'United States dollar', 'The United States contains many regional identities and communities with varied cultural traditions.'),
+  (29, 'Argentina', 'South America', 'Buenos Aires', 'Spanish', 'Argentine peso', 'Argentina''s regional cultures are expressed through music, dance, literature, food, and local traditions.'),
+  (30, 'Peru', 'South America', 'Lima', 'Spanish, Quechua, and Aymara', 'Peruvian sol', 'Peru''s cultural heritage includes Indigenous, African, European, and Asian influences across its regions.'),
+  (31, 'Chile', 'South America', 'Santiago', 'Spanish', 'Chilean peso', 'Chile''s long geography and regional communities shape distinct traditions, arts, and cuisines.'),
+  (32, 'Colombia', 'South America', 'Bogotá', 'Spanish', 'Colombian peso', 'Colombia''s diverse regions are known for varied music, festivals, cuisines, and community traditions.'),
+  (33, 'Cuba', 'Caribbean', 'Havana', 'Spanish', 'Cuban peso', 'Cuba''s cultural life includes distinctive music, dance, visual arts, cuisine, and community celebrations.'),
+  (34, 'Jamaica', 'Caribbean', 'Kingston', 'English and Jamaican Patois', 'Jamaican dollar', 'Jamaica has a distinctive cultural influence expressed through music, food, language, and sport.'),
+  (35, 'United Kingdom', 'Northern Europe', 'London', 'English and regional languages', 'Pound sterling', 'The United Kingdom includes distinct national and regional cultures, languages, arts, and traditions.'),
+  (36, 'Italy', 'Southern Europe', 'Rome', 'Italian', 'Euro', 'Italy''s regions have their own histories, food traditions, festivals, crafts, and artistic heritage.'),
+  (37, 'Spain', 'Southern Europe', 'Madrid', 'Spanish and regional languages', 'Euro', 'Spain''s regions have diverse languages, festivals, architecture, music, and culinary traditions.'),
+  (38, 'Germany', 'Central Europe', 'Berlin', 'German', 'Euro', 'Germany''s regional identities are reflected in its historic towns, festivals, arts, and food traditions.'),
+  (39, 'Greece', 'Southern Europe', 'Athens', 'Greek', 'Euro', 'Greece''s cultural heritage spans ancient sites, island communities, regional food, and living traditions.'),
+  (40, 'Turkey', 'Middle East', 'Ankara', 'Turkish', 'Turkish lira', 'Turkey''s regions connect Anatolian, Mediterranean, Middle Eastern, and European histories and traditions.'),
+  (41, 'Norway', 'Northern Europe', 'Oslo', 'Norwegian and Sámi languages', 'Norwegian krone', 'Norway''s cultural traditions include Sámi heritage, regional arts, and communities shaped by coastal and inland life.'),
+  (42, 'Sweden', 'Northern Europe', 'Stockholm', 'Swedish and recognized minority languages', 'Swedish krona', 'Sweden''s cultural life includes regional traditions, Sámi heritage, design, music, and seasonal celebrations.'),
+  (43, 'Switzerland', 'Central Europe', 'Bern', 'German, French, Italian, and Romansh', 'Swiss franc', 'Switzerland''s cultural landscape reflects its multilingual regions and local traditions.'),
+  (44, 'Ukraine', 'Eastern Europe', 'Kyiv', 'Ukrainian', 'Ukrainian hryvnia', 'Ukraine''s regional cultures are expressed through language, music, crafts, literature, and food.'),
+  (45, 'Saudi Arabia', 'Middle East', 'Riyadh', 'Arabic', 'Saudi riyal', 'Saudi Arabia''s communities and regions have traditions shaped by desert, coastal, and urban life.'),
+  (46, 'United Arab Emirates', 'Middle East', 'Abu Dhabi', 'Arabic', 'UAE dirham', 'The United Arab Emirates brings together local heritage and a diverse population across its emirates.'),
+  (47, 'Iran', 'Middle East', 'Tehran', 'Persian (Farsi) and regional languages', 'Iranian rial', 'Iran''s many regions have rich traditions in poetry, crafts, music, architecture, and cuisine.'),
+  (48, 'Israel', 'Middle East', 'Jerusalem', 'Hebrew and Arabic', 'Israeli new shekel', 'Israel is home to diverse communities and traditions, with cultural life shaped by many languages and histories.'),
+  (49, 'Fiji', 'Oceania', 'Suva', 'English, iTaukei, and Fiji Hindi', 'Fijian dollar', 'Fiji''s island communities have rich iTaukei, Indo-Fijian, and Pacific cultural traditions.'),
+  (50, 'Iceland', 'Northern Europe', 'Reykjavík', 'Icelandic', 'Icelandic króna', 'Iceland''s cultural life includes a strong literary heritage, local arts, and traditions shaped by island life.')
+on conflict (id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  capital = excluded.capital,
+  language = excluded.language,
+  currency = excluded.currency,
+  description = excluded.description;
