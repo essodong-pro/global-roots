@@ -1,6 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 
 function getAuthCallbackUrl() {
@@ -63,11 +64,15 @@ export async function signIn(formData: FormData) {
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) redirect(`/login?error=${encodeURIComponent(error.message)}`);
+  // The root layout owns the shared header's initial auth state. Refresh it
+  // after the server action updates the session cookie so the nav is current.
+  revalidatePath('/', 'layout');
   redirect(destination);
 }
 
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
+  revalidatePath('/', 'layout');
   redirect('/login?message=You+have+signed+out');
 }
