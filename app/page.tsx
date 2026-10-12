@@ -82,37 +82,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section
-        aria-labelledby="api-checks-heading"
-        className="border-t border-slate-200 bg-white px-4 py-8 sm:px-6"
-      >
-        <div className="mx-auto max-w-7xl">
-          <h2
-            id="api-checks-heading"
-            className="text-sm font-semibold text-slate-600"
-          >
-            API smoke checks
-          </h2>
-          <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-            <li>
-              <Link
-                className="text-green-800 underline underline-offset-2 hover:text-green-950"
-                href="/api/countries"
-              >
-                GET /api/countries
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="text-green-800 underline underline-offset-2 hover:text-green-950"
-                href="/api/countries/1"
-              >
-                GET /api/countries/1
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </section>
     </main>
   );
 }

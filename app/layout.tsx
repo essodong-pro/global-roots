@@ -1,32 +1,43 @@
 // Wrap every route with the shared responsive shell and document metadata.
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
+import { createClient } from '@/lib/supabase/server';
+import './globals.css';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 // Default title and description for every page.
 export const metadata: Metadata = {
-  title: "GlobalRoots",
+  title: 'GlobalRoots',
   description:
-    "Explore country cultural profiles: history, etiquette, and celebrations.",
+    'Explore country cultural profiles: history, etiquette, and celebrations.',
 };
 
 // Root layout: wraps every page with the shared header and footer.
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
@@ -36,7 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to main content
         </a>
-        <Header />
+        <Header initialSignedIn={Boolean(user)} />
         <div id="main-content" className="flex flex-1 flex-col" tabIndex={-1}>
           {children}
         </div>
